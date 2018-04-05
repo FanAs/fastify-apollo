@@ -9,12 +9,12 @@ const fp = plugin =>
     })
 
     next()
-  }, '^0.30')
+  }, '^0.39')
 
 function plugin (fastify, { graphql, graphiql, printSchema }, next) {
   fastify
     .register(apolloGraphiqlFastify, graphiql)
-    .register(apolloGraphqlFastify, Object.assign({ printSchema }, graphql))
+    .register(apolloGraphqlFastify, {printSchema, graphql})
 
   next()
 }

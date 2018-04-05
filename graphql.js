@@ -3,16 +3,23 @@ const graphqlSchema = require('./schemas').graphql
 const printSchema = require('./schemas').printSchema
 
 function apolloGraphqlFastify (options) {
-  if (!options) {
+  var printSchema = options.printSchema
+
+  if (!options.graphql) {
     throw new Error('Apollo server requires options.')
   }
 
   return function (request, reply) {
     const method = request.req.method
 
+    var graphql = options.graphql
+    if (typeof graphql === 'function') {
+	    graphql = graphql(request, reply)
+    }
+
     runHttpQuery([request, reply], {
       method,
-      options,
+      options: Object.assign({printSchema}, graphql),
       query: method === 'POST' ? request.body : request.query
     }).then(
       function (res) {
